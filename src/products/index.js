@@ -1,6 +1,6 @@
-import express from "express";
+import express, { query } from "express";
 import productMotel from "../products/schema.js";
-
+import q2m from "query-to-mongo";
 import multer from "multer";
 import { v2 as cloudinary } from "cloudinary";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
@@ -15,7 +15,14 @@ const saveProductsImg = new CloudinaryStorage({
 
 productRouter.get("/", async (req, res, next) => {
   try {
-    const getProducts = await productMotel.find();
+    const query = q2m(req.query);
+    console.log(query);
+    const getProducts = await productMotel
+      .find(query.criteria, query.options.fields)
+      .limit(query.options.limit)
+      .skip(query.options.skip)
+      .sort(query.options.sort);
+
     res.send(getProducts);
   } catch (error) {
     next(error);
@@ -77,8 +84,21 @@ productRouter.put("/:productId", async (req, res, next) => {
   }
 });
 
-productRouter.delete("/", async (req, res, next) => {
+productRouter.delete("/:productId", async (req, res, next) => {
   try {
-  } catch (error) {}
+    const deleleProduct = await productMotel.findByIdAndDelete(
+      req.params.productId
+    );
+
+    if (deleleProduct) {
+      res.status(204).send("Deleted");
+    } else {
+      res
+        .status(404)
+        .send(`Product with the id ${req.params.productId} not found!`);
+    }
+  } catch (error) {
+    next(error);
+  }
 });
 export default productRouter;
