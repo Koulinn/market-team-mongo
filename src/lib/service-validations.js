@@ -40,7 +40,7 @@ const productSchema = {
     }
 }
 
-const productSchema = {
+const reviewSchema = {
     "comment": {
         in: ["body"],
         isString: {
@@ -52,12 +52,19 @@ const productSchema = {
         isInt: {
             errorMessage: "description must be string"
         }
+    },
+    "product": {
+        in: ["body"],
+        isInt: {
+            errorMessage: "description must be string"
+        }
     }
 }
 
 
 
 const validateProductsBody = checkSchema(productSchema)
+const validateReviewBody = checkSchema(reviewSchema)
 
 const checkSchemaErrors = (req, res, next)=>{
     try {
@@ -76,7 +83,8 @@ const checkSchemaErrors = (req, res, next)=>{
 
 const validations = {
     validateProductsBody: validateProductsBody,
-    checkSchemaErrors: checkSchemaErrors
+    checkSchemaErrors: checkSchemaErrors,
+    validateReviewBody: validateReviewBody
 }
 
 export default validations
