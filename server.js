@@ -1,10 +1,12 @@
 
+
 import express from "express";
 import cors from "cors";
 import lib from "./src/lib/server-config.js";
 import productRouter from "./src/products/index.js";
 import CartRouter from "./src/Shopping-Cart/index.js";
 import mongoose from "mongoose";
+import reviewRouter from "./src/reviews/index.js"
 
 
 const { corsConfig } = lib;
@@ -22,7 +24,7 @@ server.use(cors(corsConfig));
 server.use("/products", productRouter);
 server.use("/shoppingCart", CartRouter);
 
-
+server.use('/reviews',reviewRouter)
 
 
 mongoose.connect(process.env.MONGO_CONN);
