@@ -15,8 +15,23 @@ const saveProductsImg = new CloudinaryStorage({
 
 productRouter.get("/", async (req, res, next) => {
   try {
-    const getPrudct = await productMotel.find();
-    res.send(getPrudct);
+    const getProducts = await productMotel.find();
+    res.send(getProducts);
+  } catch (error) {
+    next(error);
+  }
+});
+
+productRouter.get("/:productId", async (req, res, next) => {
+  try {
+    const getProduct = await productMotel.findById(req.params.productId);
+    if (getProduct) {
+      res.status(201).send(getProduct);
+    } else {
+      res
+        .status(401)
+        .send(`Product with the id ${req.params.productId} not found`);
+    }
   } catch (error) {
     next(error);
   }
@@ -40,4 +55,30 @@ productRouter.post(
   }
 );
 
+productRouter.put("/:productId", async (req, res, next) => {
+  try {
+    const productEdited = await productMotel.findByIdAndUpdate(
+      req.params.productId,
+      req.body,
+      {
+        new: true,
+      }
+    );
+
+    if (productEdited) {
+      res.status(201).send(productEdited);
+    } else {
+      res
+        .status(401)
+        .send(`Product with the id ${req.params.productId} not found`);
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+productRouter.delete("/", async (req, res, next) => {
+  try {
+  } catch (error) {}
+});
 export default productRouter;
