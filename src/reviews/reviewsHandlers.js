@@ -7,8 +7,9 @@ const getAll = async(req,res,next)=>{try {
 }}
 
 const reviewPost = async(req,res,next)=>{try {
-    const reviews = await reviewModel.find()
-    res.send(reviews)
+    const newReview = new reviewModel(req.body)
+    const {_id} = await newReview.save()
+    res.status(201).send({_id}) 
 } catch (error) {
     next(error)
 }}
