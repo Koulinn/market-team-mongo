@@ -1,8 +1,11 @@
+
 import express from "express";
 import cors from "cors";
 import lib from "./src/lib/server-config.js";
 import productRouter from "./src/products/index.js";
+import CartRouter from "./src/Shopping-Cart/index.js";
 import mongoose from "mongoose";
+
 
 const { corsConfig } = lib;
 
@@ -17,9 +20,14 @@ server.use(cors(corsConfig));
 //////////////////////////////////////////////////
 
 server.use("/products", productRouter);
+server.use("/shoppingCart", CartRouter);
+
+
+
 
 mongoose.connect(process.env.MONGO_CONN);
 mongoose.connection.on("connected", () => {
+
   try {
     console.log("Mongo connected");
     server.listen(PORT, async () => {

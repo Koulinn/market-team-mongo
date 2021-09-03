@@ -104,3 +104,6 @@ dist
 .tern-port
 
 notes.txt
+
+src/Products/index.js
+src/Products/schema.js
