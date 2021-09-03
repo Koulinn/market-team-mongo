@@ -2,6 +2,7 @@ import express from "express"
 import cors from "cors"
 import lib from "./src/lib/server-config.js"
 import mongoose from 'mongoose'
+import errorStatusHandlers from './src/lib/error-handling.js'
 
 
 
@@ -15,7 +16,10 @@ server.use(express.json())
 server.use(cors(corsConfig))
 
 
-
+server.use(errorStatusHandlers.forbidden)
+server.use(errorStatusHandlers.notFoundHandler)
+server.use(errorStatusHandlers.badRequest)
+server.use(errorStatusHandlers.serverError)
 
 
 
