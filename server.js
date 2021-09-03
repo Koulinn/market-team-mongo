@@ -1,6 +1,8 @@
 import express from "express"
 import cors from "cors"
 import lib from "./src/lib/server-config.js"
+import CartRouter from "./src/Shopping-Cart/index.js";
+// import productRouter from "./src/Products/index.js";
 import mongoose from 'mongoose'
 
 
@@ -17,7 +19,8 @@ server.use(cors(corsConfig))
 
 
 
-
+server.use("/shoppingCart", CartRouter);
+// server.use("/products", productRouter);
 
 
 
