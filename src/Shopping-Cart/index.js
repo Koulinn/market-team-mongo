@@ -2,6 +2,7 @@ import express from "express"
 import createError from "http-errors"
 
 import CartModel from "./schema.js"
+import productMotel from "../products/schema.js";
 
 const CartRouter = express.Router()
 
@@ -14,7 +15,7 @@ CartRouter.post("/:productID", async (req, res, next) => {
 
     const filter = { productID: product_ID }
 
-    const product = await productModel.findById(product_ID)
+    const product = await productMotel.findById(product_ID)
 
     console.log(product)
 
@@ -26,8 +27,16 @@ CartRouter.post("/:productID", async (req, res, next) => {
                     $inc: { quantity: 1} }
 
     let newCartItem = await CartModel.findOneAndUpdate(filter, update, {
-      new: true
-    })
+      new: true,
+      upsert: true
+    }
+    // (error, doc) => {
+      // error: any errors that occurred
+      // doc: the document before updates are applied if `new: false`, or after updates if `new = true`
+    // }
+    );
+
+    console.log(newCartItem)
 
     const cartTotal = newCartItem.price*newCartItem.quantity
 
@@ -93,21 +102,63 @@ CartRouter.get("/:cartID", async (req, res, next) => {
   }
 })
 
-CartRouter.delete("/:cartID", async (req, res, next) => {
+CartRouter.delete("/clearCart", async (req, res, next) => {
+  try {
+    // const cartItemID = req.params.cartID
+
+    // IDString = cartItemID.toString()
+
+    const deletedCartItem = await CartModel.deleteMany()
+
+    if (deletedCartItem) {
+      res.status(204).send(deletedCartItem)
+    } else {
+      next(createError(404, `Cart could not be cleared`))
+    }
+  } catch (error) {
+    next(createError(500, `An error occurred while clearing cart`))
+  }
+})
+
+CartRouter.delete("/removeAll/:cartID", async (req, res, next) => {
   try {
     const cartItemID = req.params.cartID
+
+    // IDString = cartItemID.toString()
 
     const deletedCartItem = await CartModel.findByIdAndDelete(cartItemID)
 
     if (deletedCartItem) {
-      res.status(204).send()
+      res.status(204).send(deletedCartItem)
     } else {
       next(createError(404, `Cart Item with _id ${cartItemID} not found!`))
     }
   } catch (error) {
-    next(createError(500, `An error occurred while deleting author ${req.params.authorId}`))
+    next(createError(500, `An error occurred while deleting cart item ${req.params.cartID}`))
   }
 })
+
+CartRouter.delete("/:cartID", async (req, res, next) => {
+  try {
+    const cartItemID = req.params.cartID
+
+    IDString = cartItemID.toString()
+
+    const deletedCartItem = await CartModel.findByIdAndUpdate(cartItemID, {$inc: { quantity: -1 } })
+
+    if (deletedCartItem) {
+      res.status(204).send(deletedCartItem)
+    } else {
+      next(createError(404, `Cart Item with _id ${cartItemID} not found!`))
+    }
+  } catch (error) {
+    next(createError(500, `An error occurred while deleting cart item ${req.params.cartID}`))
+  }
+})
+
+
+
+
 
 // CartRouter.put("/:authorId", async (req, res, next) => {
 //   try {
