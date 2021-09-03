@@ -1,6 +1,6 @@
 const notFoundHandler = (err, req, res, next) =>{
-    if(err.status = 404){
-        res.status.send({
+    if(err.status === 404){
+        res.send({
             msg: "Not found",
             successState: false
         })
@@ -10,8 +10,8 @@ const notFoundHandler = (err, req, res, next) =>{
 }
 
 const forbidden = (err, req, res, next) =>{
-    if(err.status = 403){
-        res.status.send({
+    if(err.status === 403){
+        res.send({
             msg: "Forbidden",
             successState: false
         })
@@ -21,10 +21,12 @@ const forbidden = (err, req, res, next) =>{
 }
 
 const badRequest = (err, req, res, next) =>{
-    if(err.status = 404){
-        res.status.send({
+    console.log(res)
+    if(err.status === 400){
+        res.status(400).send({
             msg: "Bad request, something went wrong",
-            successState: false
+            successState: false,
+            errorMessage: err.errors? err.errors : err
         })
     } else{
         next(err)

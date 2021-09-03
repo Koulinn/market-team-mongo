@@ -3,7 +3,7 @@ import cors from "cors"
 import lib from "./src/lib/server-config.js"
 import mongoose from 'mongoose'
 import errorStatusHandlers from './src/lib/error-handling.js'
-
+import testRouter from './src/services/test.js'
 
 
 const { corsConfig } = lib
@@ -14,6 +14,11 @@ const { PORT } = process.env
 
 server.use(express.json())
 server.use(cors(corsConfig))
+
+
+server.use("/test", testRouter)
+
+
 
 
 server.use(errorStatusHandlers.forbidden)
