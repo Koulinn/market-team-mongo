@@ -2,6 +2,7 @@ import express from "express"
 import cors from "cors"
 import lib from "./src/lib/server-config.js"
 import mongoose from 'mongoose'
+import reviewRouter from "./src/reviews/index.js"
 
 
 
@@ -15,7 +16,7 @@ server.use(express.json())
 server.use(cors(corsConfig))
 
 
-
+server.use('/reviews',reviewRouter)
 
 
 
